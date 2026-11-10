@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MALANJE CONECTA</title>
+<style>
+:root{--gold:#d4af37;--black:#101010;--cream:#f7f4eb}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:#222}
+header{background:var(--black);color:white;text-align:center;padding:28px 16px;border-bottom:4px solid var(--gold)}
+.logo{font-size:30px;color:var(--gold);font-weight:800;letter-spacing:1px}header p{margin:8px 0 0}
+main{max-width:950px;margin:22px auto;padding:0 14px}.card{background:white;border-radius:12px;padding:18px;margin:16px 0;box-shadow:0 2px 10px #0001}
+h2{margin-top:0;color:#191919}.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+input,select,textarea,button{font:inherit;padding:11px;border-radius:8px;border:1px solid #ccc;width:100%}button{background:var(--black);color:var(--gold);font-weight:bold;border:0;cursor:pointer}
+.listing{border:1px solid #eee;padding:14px;border-radius:9px;margin:10px 0}.listing h3{margin:0 0 8px}.listing a{color:#087b43;font-weight:bold}
+small{color:#666}footer{text-align:center;padding:20px;background:#111;color:#ddd}
+</style></head>
+<body>
+<header><div class="logo">🔗 MALANJE CONECTA</div><p>Encontre negócios, serviços e comerciantes de Malanje num só lugar.</p></header>
+<main>
+<section class="card"><h2>🔎 Encontrar um negócio</h2><div class="controls">
+<input id="search" placeholder="Pesquisar negócio ou serviço...">
+<select id="category"><option value="">Todas as categorias</option><option>Alimentação</option><option>Beleza</option><option>Moda</option><option>Saúde</option><option>Educação</option><option>Serviços</option><option>Comércio</option><option>Outros</option></select>
+</div></section>
+<section class="card"><h2>📍 Negócios cadastrados</h2><div id="listings"></div><small>Os anúncios adicionados neste navegador ficam guardados localmente nesta versão de demonstração.</small></section>
+<section class="card"><h2>➕ Cadastrar o meu negócio</h2><form id="form"><div class="controls">
+<input id="name" placeholder="Nome do negócio" required>
+<select id="cat" required><option value="">Escolher categoria</option><option>Alimentação</option><option>Beleza</option><option>Moda</option><option>Saúde</option><option>Educação</option><option>Serviços</option><option>Comércio</option><option>Outros</option></select>
+<input id="area" placeholder="Bairro / município" required>
+<input id="phone" placeholder="Telefone ou WhatsApp (ex. 923000000)" required>
+<input id="service" placeholder="Produto ou serviço oferecido" required>
+</div><p><button type="submit">Cadastrar negócio</button></p></form></section>
+<section class="card"><h2>📣 Divulgue o seu negócio</h2><p>Planos promocionais (valores demonstrativos):</p><ul><li>Destaque semanal — 5.000 Kz</li><li>Publicidade semanal — 10.000 Kz</li><li>Destaque mensal — 15.000 Kz</li></ul><p>Para confirmar publicidade, contacte a administração pelo WhatsApp indicado pelo responsável do site.</p></section>
+</main><footer>© MALANJE CONECTA · Apoiar os negócios locais</footer>
+<script>
+const key='malanjeConectaListings';
+function getItems(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return []}}
+function render(){let items=getItems(),q=document.getElementById('search').value.toLowerCase(),c=document.getElementById('category').value;
+items=items.filter(x=>(!q||(x.name+' '+x.service+' '+x.area).toLowerCase().includes(q))&&(!c||x.cat===c));
+const box=document.getElementById('listings');box.innerHTML=items.length?'':'<p>Ainda não há negócios cadastrados. Seja o primeiro!</p>';
+items.forEach(x=>{let d=document.createElement('div');d.className='listing';let h=document.createElement('h3');h.textContent=x.name;let p=document.createElement('p');p.textContent=x.cat+' · '+x.area+' — '+x.service;let a=document.createElement('a');a.href='https://wa.me/244'+x.phone.replace(/\D/g,'');a.target='_blank';a.rel='noopener';a.textContent='Contactar via WhatsApp';d.append(h,p,a);box.appendChild(d)})}
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();let item={name:name.value.trim(),cat:cat.value,area:area.value.trim(),phone:phone.value.trim(),service:service.value.trim()};let items=getItems();items.unshift(item);localStorage.setItem(key,JSON.stringify(items));e.target.reset();render();alert('Cadastro guardado neste navegador!')});
+document.getElementById('search').addEventListener('input',render);document.getElementById('category').addEventListener('change',render);render();
+</script></body></html>
